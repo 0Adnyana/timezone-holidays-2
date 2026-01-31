@@ -1,0 +1,38 @@
+{
+	"name": "timezone-holidays-2",
+	"version": "1.0.0",
+	"type": "module",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "tsx watch src/index.ts"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/0Adnyana/timezone-holidays-2.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/0Adnyana/timezone-holidays-2/issues"
+	},
+	"homepage": "https://github.com/0Adnyana/timezone-holidays-2#readme",
+	"description": "",
+	"devDependencies": {
+		"@types/node": "^25.1.0",
+		"@types/ws": "^8.18.1",
+		"prisma": "^7.3.0",
+		"tsx": "^4.21.0",
+		"typescript": "^5.9.3"
+	},
+	"dependencies": {
+		"@neondatabase/serverless": "^1.0.2",
+		"@prisma/adapter-neon": "^7.3.0",
+		"@prisma/client": "^7.3.0",
+		"@types/express": "^5.0.6",
+		"dotenv": "^17.2.3",
+		"express": "^5.2.1",
+		"ws": "^8.19.0"
+	}
+}
