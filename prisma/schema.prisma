@@ -12,3 +12,12 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model GoogleHolidayCalendar {
+  id  String @id @default(uuid())
+  countryCode String @db.Char(2) @unique @map("country_code")
+  calendarName String @db.VarChar() @map("calendar_name")
+  calendarUrl String @db.VarChar() @map("calendar_url")
+
+  @@map("google_holiday_calendars")
+}

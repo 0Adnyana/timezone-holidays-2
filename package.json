@@ -20,7 +20,9 @@
 	"homepage": "https://github.com/0Adnyana/timezone-holidays-2#readme",
 	"description": "",
 	"devDependencies": {
+		"@types/ioredis": "^4.28.10",
 		"@types/node": "^25.1.0",
+		"@types/redis": "^4.0.10",
 		"@types/ws": "^8.18.1",
 		"prisma": "^7.3.0",
 		"tsx": "^4.21.0",
@@ -33,6 +35,8 @@
 		"@types/express": "^5.0.6",
 		"dotenv": "^17.2.3",
 		"express": "^5.2.1",
+		"ioredis": "^5.9.2",
+		"redis": "^5.10.0",
 		"ws": "^8.19.0"
 	}
 }
