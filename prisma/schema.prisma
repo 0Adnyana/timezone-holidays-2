@@ -13,11 +13,33 @@ datasource db {
   provider = "postgresql"
 }
 
+enum EventStatus {
+  CONFIRMED // 'status': 'confirmed' and description doesn't contain 'tentative'
+  TENTATIVE // 'status': 'confirmed' and description contains 'tentative'
+  CANCELLED // 'status': 'cancelled'
+}
+
 model GoogleHolidayCalendar {
   id  String @id @default(uuid())
   countryCode String @db.Char(2) @unique @map("country_code")
   calendarName String @db.VarChar() @map("calendar_name")
-  calendarUrl String @db.VarChar() @map("calendar_url")
+  calendarUrl String @db.VarChar() @unique @map("calendar_url")
+  nextSyncToken String? @db.VarChar() @map("next_sync_token")
+  events GoogleHolidayEvent[]
+  lastUpdated DateTime? @db.Timestamptz() @map("last_updated") // e.g. 'updated': '2026-01-16T18:51:43.821Z'
 
   @@map("google_holiday_calendars")
+}
+
+model GoogleHolidayEvent {
+  id String @id @default(uuid())
+  googleId String @unique @map("google_id")// e.g. 'id' = '20260531_ni1j569vrgq9qn6h2hol7hl924'
+  calendar GoogleHolidayCalendar @relation(fields: [calendarId], references: [id])
+  calendarId String @map("calendar_id")
+  holidayName String @db.VarChar() @map("holiday_name")
+  status EventStatus @default(CONFIRMED) 
+  startDate DateTime @db.Date() @map("start_date")
+  endDate DateTime @db.Date() @map("end_date")
+
+  @@map("google_holiday_events")
 }

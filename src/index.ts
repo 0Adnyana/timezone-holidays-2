@@ -1,6 +1,7 @@
+import "dotenv/config";
 import express from "express";
-import prisma from "./lib/prisma";
 import Redis from "ioredis";
+import locationRoutes from "./routes/locationRoutes";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,25 +19,7 @@ app.get("/test", async (req, res) => {
 	res.json(result);
 });
 
-app.get("/api/location/current-info/:textQuery", async (req, res) => {
-	// validate data
-	const textQuery: String = req.params.textQuery;
-
-	const googlePlacesResponse = await fetch(`https://places.googleapis.com/v1/places:searchText`, {
-		headers: {
-			"Content-Type": "application/json",
-			"X-Goog-Api-Key": process.env.MAPS_API_KEY,
-			"X-Goog-FieldMask": "",
-		},
-		body: JSON.stringify({
-			textQuery: textQuery,
-			pageSize: 1,
-			includedType: "administrative_area_level_1",
-		}),
-	});
-
-	const googlePlacesData = (await googlePlacesResponse).json();
-});
+app.use("/api/location", locationRoutes);
 
 app.listen(PORT, () => {
 	console.log(`Server running on http://localhost:${PORT}`);

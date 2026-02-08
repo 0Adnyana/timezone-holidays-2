@@ -1,4 +1,4 @@
-import { getTimezoneInfo } from "./getTimezoneInfo";
+import { getTimezoneInfo } from "../helpers/getTimezoneInfo";
 
 type TimeOfDay = "Morning" | "Afternoon" | "Evening" | "Night";
 
