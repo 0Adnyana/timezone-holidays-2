@@ -5,15 +5,18 @@ const router = Router();
 
 router.get("/current-info", async (req, res) => {
 	// validate data
-	const searchText: string = req.query.searchText as string;
+	try {
+		const searchText: string = req.query.searchText as string;
 
-	if (!searchText) {
-		return res.status(400).json({ error: "Query parameter 'q' is required" });
+		if (!searchText) {
+			return res.status(400).json({ error: "Query parameter 'searchText' is required" });
+		}
+
+		const result = await getLocationInfo(searchText);
+		res.json(result);
+	} catch (e) {
+		res.status(500).json({ error: "Internal server error" });
 	}
-
-	const result = await getLocationInfo(searchText);
-	res.json(result);
-	// console.log(JSON.stringify(googlePlacesData, null, 2));
 });
 
 export default router;
