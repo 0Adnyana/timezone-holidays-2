@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import Redis from "ioredis";
 import locationRoutes from "./routes/locationRoutes";
+import refreshRoutes from "./routes/refreshRoutes";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,6 +19,8 @@ app.get("/test", async (req, res) => {
 	const result = "works!";
 	res.json(result);
 });
+
+app.use("/api/refresh", refreshRoutes);
 
 app.use("/api/location", locationRoutes);
 
