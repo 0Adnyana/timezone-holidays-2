@@ -1,4 +1,4 @@
-interface TimezoneInfo {
+export interface TimezoneInfo {
 	currentUTCOffsetInMinutes: number;
 	currentTime: { hour: number; minute: number };
 	currentDate: { year: number; month: number; day: number };

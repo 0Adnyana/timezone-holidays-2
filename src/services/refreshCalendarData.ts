@@ -10,8 +10,7 @@ export async function refreshCalendarData() {
 	for (const calendar of calendars) {
 		let response: Response;
 
-		console.log(`\nCountry: ${calendar.calendarName}`);
-		console.log(`Address: ${calendar.calendarUrl}`);
+		console.log(`Fetching data for calendar: ${calendar.calendarName}`);
 
 		if (calendar.nextSyncToken) {
 			// sync with token
