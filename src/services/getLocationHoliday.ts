@@ -33,24 +33,4 @@ export async function getLocationHoliday(date: Date, countryCode: string): Promi
 		isHoliday: holidays.length > 0,
 		holidays,
 	};
-
-	// let holidayInfo: HolidayInfo;
-	// if (response.length == 0) {
-	// 	holidayInfo = {
-	// 		isHoliday: false,
-	// 		holidays: [],
-	// 	};
-	// } else {
-	// 	holidayInfo = {
-	// 		isHoliday: true,
-	// 		holidays: response.map((holiday) => {
-	// 			return {
-	// 				holidayName: holiday.holidayName,
-	// 				holidayStatus: holiday.status,
-	// 			};
-	// 		}),
-	// 	};
-	// }
-
-	// return holidayInfo;
 }

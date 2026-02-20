@@ -1,15 +1,9 @@
 import { Router } from "express";
-import { getLocationInfo } from "../services/getLocationInfo";
+import { getLocationInfo, type PlacesInfo } from "../services/getLocationInfo";
 import { getLocationHoliday } from "../services/getLocationHoliday";
 import { getTimezoneInfo, type TimezoneInfo } from "../helpers/getTimezoneInfo";
-
-export interface PlacesInfo {
-	timezoneId: string;
-	administrativeAreaLevel2?: string;
-	administrativeAreaLevel1?: string;
-	country: string;
-	countryCode: string;
-}
+import { toUTCDate } from "../helpers/dateUtils";
+import { getNextHours } from "../services/getNextHours";
 
 const router = Router();
 
@@ -22,21 +16,39 @@ router.get("/current-info", async (req, res) => {
 		}
 
 		const placesInfo: PlacesInfo = await getLocationInfo(searchText);
-		const timezoneInfo: TimezoneInfo = await getTimezoneInfo(placesInfo.timezoneId);
+		const timezoneInfo: TimezoneInfo = getTimezoneInfo(placesInfo.timezoneId);
 
-		const currentDate = new Date(Date.UTC(timezoneInfo.currentDate.year, timezoneInfo.currentDate.month - 1, timezoneInfo.currentDate.day));
+		const currentDate = toUTCDate(timezoneInfo.currentDate.year, timezoneInfo.currentDate.month, timezoneInfo.currentDate.day);
 
-		// const independenceDayTest = new Date(Date.UTC(2026, 7, 17)); // Mock: 17 Aug 2025
 		console.log(placesInfo.countryCode);
 		const holidayInfo = await getLocationHoliday(currentDate, placesInfo.countryCode);
 
 		const result = {
-			...placesInfo,
+			location: {
+				...placesInfo,
+			},
 			...timezoneInfo,
 			...holidayInfo,
 		};
 
 		res.json(result);
+	} catch (e) {
+		res.status(500).json({ error: "Internal server error" });
+	}
+});
+
+router.get("/next-hours", async (req, res) => {
+	try {
+		const countryCode: string = req.query.countryCode as string;
+		const timezoneId: string = req.query.timezoneId as string;
+
+		if (!timezoneId || !countryCode) {
+			return res.status(400).json({ error: "Query parameters 'timezoneId' and 'countryCode' are required" });
+		}
+
+		const response = await getNextHours(timezoneId, countryCode);
+
+		res.json(response);
 	} catch (e) {
 		res.status(500).json({ error: "Internal server error" });
 	}

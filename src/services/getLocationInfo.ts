@@ -1,5 +1,10 @@
-import { getTimezoneInfo } from "../helpers/getTimezoneInfo";
-import type { PlacesInfo } from "../routes/locationRoutes";
+export interface PlacesInfo {
+	timezoneId: string;
+	administrativeAreaLevel2?: string;
+	administrativeAreaLevel1?: string;
+	country: string;
+	countryCode: string;
+}
 
 export async function getLocationInfo(searchText: string): Promise<PlacesInfo> {
 	const response = await fetch(`https://places.googleapis.com/v1/places:searchText`, {
@@ -48,20 +53,4 @@ export async function getLocationInfo(searchText: string): Promise<PlacesInfo> {
 	}
 
 	return placesInfo;
-	// let processedData: any = {};
-
-	// addressComponents.map((component: any) => {
-	// 	component.types?.map((type: string) => {
-	// 		if (type == "country") {
-	// 			processedData.country = component.longText;
-	// 			processedData.countryCode = component.shortText;
-	// 		} else if (type == "administrative_area_level_2") {
-	// 			processedData.administrativeAreaLevel2 = component.longText;
-	// 		} else if (type == "administrative_area_level_1") {
-	// 			processedData.administrativeAreaLevel1 = component.longText;
-	// 		}
-	// 	});
-	// });
-
-	// return { ...processedData, timezoneId: data.places[0].timeZone.id };
 }

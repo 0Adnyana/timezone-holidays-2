@@ -1,3 +1,5 @@
+import { createIntlParser } from "./dateUtils";
+
 export interface TimezoneInfo {
 	currentUTCOffsetInMinutes: number;
 	currentTime: { hour: number; minute: number };
@@ -14,34 +16,29 @@ export interface TimezoneInfo {
  */
 export function getTimezoneInfo(timezoneId: string): TimezoneInfo {
 	const now = new Date();
-
-	// Get the offset in minutes (including DST)
 	const currentUTCOffsetInMinutes = getUTCOffsetInMinutes(timezoneId, now);
 
-	// Get current time in the specified timezone
-	const currentTime = getCurrentTime(timezoneId, now);
+	const parse = createIntlParser(
+		timezoneId,
+		{ year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric", hour12: false },
+		["year", "month", "day", "hour", "minute"],
+	);
+	const { hour, minute, year, month, day } = parse(now);
 
-	// Get current date in the specified timezone
-	const currentDate = getCurrentDate(timezoneId, now);
+	const currentTime = { hour, minute };
+	const currentDate = { year, month, day };
+	const timeOfDay = getTimeOfDay(hour);
 
-	// Determine time of day from current hour
-	const timeOfDay = getTimeOfDay(currentTime);
-
-	return {
-		currentUTCOffsetInMinutes,
-		currentTime,
-		currentDate,
-		timeOfDay,
-	};
+	return { currentUTCOffsetInMinutes, currentTime, currentDate, timeOfDay };
 }
 
-function getTimeOfDay(currentTime: TimezoneInfo["currentTime"]): TimezoneInfo["timeOfDay"] {
+export function getTimeOfDay(currentHour: TimezoneInfo["currentTime"]["hour"]): TimezoneInfo["timeOfDay"] {
 	switch (true) {
-		case currentTime.hour >= 6 && currentTime.hour < 12:
+		case currentHour >= 6 && currentHour < 12:
 			return "morning";
-		case currentTime.hour >= 12 && currentTime.hour < 18:
+		case currentHour >= 12 && currentHour < 18:
 			return "afternoon";
-		case currentTime.hour >= 18 && currentTime.hour < 21:
+		case currentHour >= 18 && currentHour < 21:
 			return "evening";
 		default:
 			return "night";
@@ -64,7 +61,6 @@ function getUTCOffsetInMinutes(timezoneId: string, date: Date): number {
 		throw new Error(`Unable to get offset for timezone: ${timezoneId}`);
 	}
 
-	// Parse offset string like "GMT+5:30", "GMT-8", "GMT"
 	if (offsetString === "GMT" || offsetString === "UTC") {
 		return 0;
 	}
@@ -79,39 +75,4 @@ function getUTCOffsetInMinutes(timezoneId: string, date: Date): number {
 	const minutes = match[3] ? parseInt(match[3], 10) : 0;
 
 	return sign * (hours * 60 + minutes);
-}
-
-/**
- * Gets the current time in the specified timezone.
- */
-function getCurrentTime(timezoneId: string, date: Date): { hour: number; minute: number } {
-	const parts = new Intl.DateTimeFormat("en-US", {
-		timeZone: timezoneId,
-		hour: "numeric",
-		minute: "numeric",
-		hour12: false,
-	}).formatToParts(date);
-
-	const hour = parseInt(parts.find((p) => p.type === "hour")?.value ?? "0", 10);
-	const minute = parseInt(parts.find((p) => p.type === "minute")?.value ?? "0", 10);
-
-	return { hour, minute };
-}
-
-/**
- * Gets the current date in the specified timezone.
- */
-function getCurrentDate(timezoneId: string, date: Date): { year: number; month: number; day: number } {
-	const parts = new Intl.DateTimeFormat("en-US", {
-		timeZone: timezoneId,
-		year: "numeric",
-		month: "numeric",
-		day: "numeric",
-	}).formatToParts(date);
-
-	const year = parseInt(parts.find((p) => p.type === "year")?.value ?? "0", 10);
-	const month = parseInt(parts.find((p) => p.type === "month")?.value ?? "0", 10);
-	const day = parseInt(parts.find((p) => p.type === "day")?.value ?? "0", 10);
-
-	return { year, month, day };
 }
