@@ -19,8 +19,6 @@ router.get("/current-info", async (req, res) => {
 		const timezoneInfo: TimezoneInfo = getTimezoneInfo(placesInfo.timezoneId);
 
 		const currentDate = toUTCDate(timezoneInfo.currentDate.year, timezoneInfo.currentDate.month, timezoneInfo.currentDate.day);
-
-		console.log(placesInfo.countryCode);
 		const holidayInfo = await getLocationHoliday(currentDate, placesInfo.countryCode);
 
 		const result = {
@@ -41,12 +39,13 @@ router.get("/next-hours", async (req, res) => {
 	try {
 		const countryCode: string = req.query.countryCode as string;
 		const timezoneId: string = req.query.timezoneId as string;
+		const hourReturnCount: number = parseInt(req.query.hourReturnCount as string);
 
 		if (!timezoneId || !countryCode) {
 			return res.status(400).json({ error: "Query parameters 'timezoneId' and 'countryCode' are required" });
 		}
 
-		const response = await getNextHours(timezoneId, countryCode);
+		const response = await getNextHours(timezoneId, countryCode, hourReturnCount);
 
 		res.json(response);
 	} catch (e) {

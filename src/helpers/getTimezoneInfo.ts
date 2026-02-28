@@ -1,4 +1,4 @@
-import { createIntlParser } from "./dateUtils";
+import { createIntlParser, getTimeOfDay } from "./dateUtils";
 
 export interface TimezoneInfo {
 	currentUTCOffsetInMinutes: number;
@@ -30,19 +30,6 @@ export function getTimezoneInfo(timezoneId: string): TimezoneInfo {
 	const timeOfDay = getTimeOfDay(hour);
 
 	return { currentUTCOffsetInMinutes, currentTime, currentDate, timeOfDay };
-}
-
-export function getTimeOfDay(currentHour: TimezoneInfo["currentTime"]["hour"]): TimezoneInfo["timeOfDay"] {
-	switch (true) {
-		case currentHour >= 6 && currentHour < 12:
-			return "morning";
-		case currentHour >= 12 && currentHour < 18:
-			return "afternoon";
-		case currentHour >= 18 && currentHour < 21:
-			return "evening";
-		default:
-			return "night";
-	}
 }
 
 /**
